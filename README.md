@@ -1,143 +1,97 @@
-# Android WebView Open Template
+# Website-to-Android Jetpack Compose Boilerplate (Shell WebView Avançado)
 
-Template Android para publicar um site como aplicativo nativo usando Kotlin, Jetpack Compose e Android WebView.
+Este é um projeto Android moderno desenvolvido em **Kotlin** e **Jetpack Compose** (Material 3) desenvolvido para encapsular (embedar) qualquer site responsivo/PWA em um aplicativo nativo robusto, profissional e pronto para produção.
 
-O projeto foi desenhado para ser reutilizavel: a identidade do app, URL inicial, hosts permitidos e logo sao configurados por ambiente, sem alterar codigo-fonte.
+Originalmente projetado para a rede social corporativa **GP Social** (da Grupo Pereira), a arquitetura deste projeto foi totalmente descentralizada e parametrizada para que qualquer pessoa ou empresa possa usar este mesmo código-fonte para colocar seu próprio site na Google Play Store em minutos!
 
-## Principais Recursos
+---
 
-- WebView configurada para sites modernos com JavaScript, cookies e local storage.
-- Configuracao por `.env` para nome do app, URL, identificador Android e identidade visual.
-- Splash screen nativa com logo e texto do produto.
-- Tratamento de estado offline com acao de recarregar.
-- Upload de arquivos via seletor nativo Android.
-- Download de arquivos via `DownloadManager`.
-- Separacao entre template, configuracao local e artefatos de build.
-- Gradle Wrapper versionado para garantir builds reproduziveis.
+## 🚀 Principais Recursos
 
-## Arquitetura
+-   **⚡ Splash Screen Animada**: Tela de carregamento integrada desenvolvida com Jetpack Compose, animações de fade-out e indicador de progresso fluído.
+-   **🔌 Detecção Offline com Tela Amigável**: Tela nativa de erro de conexão com botão de reteste que evita a clássica tela branca de erro do navegador Chrome quando o usuário perde o acesso à internet.
+-   **📂 Suporte Completo a Uploads (HTML5 File Choosers)**: Integração robusta com o selecionador nativo para upload de arquivos, fotos e anexos.
+-   **📥 Gerenciador de Downloads Integrado (Android DownloadManager)**: Permite que os usuários baixem anexos, fotos ou PDFs diretamente do site em segundo plano no dispositivo móvel com notificações do sistema.
+-   **🍪 Persistência Avançada de Cookies**: Configuração otimizada com `CookieManager` garantindo que os usuários permaneçam logados no aplicativo mesmo se reiniciarem o aparelho.
+-   **📱 Edge-to-Edge Integrado**: Renderização fluída ocupando 100% da tela do usuário, respeitando a barra de status e barra de navegação virtual de forma natural.
 
-```text
-App Android - Embedded/
-├─ README.md
-├─ .gitignore
-└─ android-webview-open-template/
-   ├─ .env.example
-   ├─ build.gradle.kts
-   ├─ gradle.properties
-   ├─ gradlew
-   ├─ gradlew.bat
-   ├─ settings.gradle.kts
-   ├─ LICENSE
-   ├─ app/
-   │  ├─ build.gradle.kts
-   │  └─ src/
-   │     ├─ main/
-   │     ├─ test/
-   │     └─ androidTest/
-   └─ gradle/
-      ├─ libs.versions.toml
-      └─ wrapper/
-```
+---
 
-O modulo `app` concentra a aplicacao Android. A configuracao de produto fica fora do codigo Kotlin, no arquivo `.env`, mantendo o template reutilizavel para diferentes apps.
+## 🛠️ Como Customizar para o seu Próprio Site (Em 3 Passos)
 
-## Configuracao
+Tudo que você precisa fazer para transformar este projeto no aplicativo oficial do seu próprio site é:
 
-Crie um arquivo `.env` dentro de `android-webview-open-template`, ao lado de `.env.example`:
-
-```powershell
-Copy-Item ".env.example" ".env"
-```
-
-Exemplo:
+### 1. Alterar as Configurações Centrais no arquivo `.env`
+Crie ou edite o arquivo `.env` na raiz do projeto (copiado de `.env.example`) e configure os parâmetros do seu site. O plugin de segredos do Gradle os compilará automaticamente para o aplicativo:
 
 ```properties
-APP_NAME=Minha Empresa
-APP_ID=br.com.minhaempresa.app
-WEBVIEW_URL=https://minhaempresa.com.br
-WEBVIEW_ALLOWED_HOSTS=cdn.minhaempresa.com.br,checkout.minhaempresa.com.br
-SPLASH_SUBTITLE=Portal oficial
-USER_AGENT_SUFFIX=MinhaEmpresaAndroid/1.0
-APP_LOGO_PATH=branding/logo.jpeg
-ALLOW_CLEARTEXT_TRAFFIC=false
+# Nome do aplicativo exibido no topo e nas telas do app
+APP_NAME=Nome do Seu App
+
+# Slogan ou descrição curta exibida na tela de splash
+APP_SUBTITLE=Seu custom slogan ou descrição curta
+
+# A URL do site ou PWA responsivo que o WebView irá carregar por padrão
+TARGET_URL=https://seu-site.com.br/login
+
+# O host/domínio principal do site para controlar redirecionamentos internos
+TARGET_HOST=seu-site.com.br
+
+# Sufixo customizado adicionado ao User Agent se necessário identificar o app no back-end
+USER_AGENT_SUFFIX=Meu_App_Android_Shell/1.0
+
+# Caminho da imagem do logotipo para a Splash Screen e o ícone adaptivo (Cópia automática em tempo de build)
+# Formatos suportados: png, jpg, jpeg, webp.
+# O script do Gradle limpa arquivos antigos e sincroniza este novo logo automaticamente!
+APP_LOGO_PATH=app/src/main/res/drawable/gp_social_logo.png
 ```
 
-## Variaveis De Ambiente
+Se preferir, o nome exibido na tela inicial do celular (Android launcher label) e as traduções amigáveis de mensagens offline continuam configuráveis em `/app/src/main/res/values/strings.xml`:
 
-| Variavel | Descricao |
-| --- | --- |
-| `APP_NAME` | Nome exibido no launcher e na splash screen. |
-| `APP_ID` | Identificador unico do app Android. Deve seguir o padrao de dominio reverso. |
-| `WEBVIEW_URL` | URL inicial carregada pela WebView. |
-| `WEBVIEW_ALLOWED_HOSTS` | Lista de hosts adicionais que podem continuar abrindo dentro do app. |
-| `SPLASH_SUBTITLE` | Texto secundario exibido na splash screen. |
-| `USER_AGENT_SUFFIX` | Identificador adicionado ao user agent da WebView. |
-| `APP_LOGO_PATH` | Caminho relativo para o logo em PNG, JPG ou JPEG. |
-| `ALLOW_CLEARTEXT_TRAFFIC` | Define se o app aceita trafego HTTP sem TLS. Em producao, mantenha `false`. |
-
-## Identidade Visual
-
-A pasta `branding` ja existe dentro de `android-webview-open-template`. Coloque nela o logo do app:
-
-```text
-android-webview-open-template/
-└─ branding/
-   └─ logo.jpeg
+```xml
+<resources>
+    <!-- Identidade visual do launcher (gaveta de aplicativos) -->
+    <string name="app_name">Nome do Seu App</string>
+    <string name="app_subtitle">Sua Mensagem de Splash</string>
+</resources>
 ```
 
-Depois configure:
+### 2. Sincronizar o Logotipo Automaticamente
+Basta colocar o arquivo de imagem da logo do seu app em uma pasta do projeto de sua preferência (por exemplo, na raiz) e apontar o caminho dela no parâmetro `APP_LOGO_PATH` do seu arquivo `.env`.
 
-```properties
-APP_LOGO_PATH=branding/logo.jpeg
+O script inteligente integrado no **Gradle** copiará, limpará formatos anteriores autodetectados (evitando duplicações de recursos na compilação do Android Asset Studio) e integrará a imagem diretamente na Splash Screen nativa e nos ícones de launcher adaptivos automáticos!
+
+### 3. Alterar o ID do Aplicativo (Package Name)
+Abra o arquivo `/app/build.gradle.kts` e mude o seu `applicationId` padrão no bloco `defaultConfig`:
+
+```kotlin
+android {
+    defaultConfig {
+        applicationId = "com.suaempresa.seuapp"
+        // ...
+    }
+}
 ```
 
-Durante o build, o logo e copiado para recursos gerados em `app/build/generated`, sem modificar arquivos versionados em `src/main`.
+---
 
-## Build
+## 📦 Como Compilar e Gerar o APK
 
-O projeto inclui Gradle Wrapper configurado para Gradle 9.3.1.
+Após configurar os itens acima, você pode rodar os testes nativos e compilar o projeto para gerar um APK pronto para instalar ou o pacote Bundle (.aab) para envio à Play Store:
 
-No Android Studio:
-
-1. Abra a pasta `android-webview-open-template`.
-2. Execute **File > Sync Project with Gradle Files**.
-3. Execute **Build > Make Project**.
-
-No terminal Windows:
-
-```powershell
-cd "android-webview-open-template"
-.\gradlew.bat assembleDebug
-```
-
-No macOS/Linux:
-
+Para verificar se a build e os testes unitários/Robolectric rodam perfeitamente:
 ```bash
-cd android-webview-open-template
-./gradlew assembleDebug
+gradle :app:testDebugUnitTest
 ```
 
-## Seguranca
+Para gerar o APK oficial para teste:
+```bash
+gradle assembleDebug
+```
+O arquivo APK final será gerado no diretório `/app/build/outputs/apk/debug/app-debug.apk`.
 
-- Use `https://` em `WEBVIEW_URL`.
-- Mantenha `ALLOW_CLEARTEXT_TRAFFIC=false` em producao.
-- Liste apenas hosts confiaveis em `WEBVIEW_ALLOWED_HOSTS`.
-- Nao versione `.env`, keystores, APKs ou AABs.
-- Configure uma chave de assinatura propria para builds de release.
+---
 
-## Troubleshooting
+## 📄 Licença
 
-Se o app abrir uma tela de erro ao carregar um site HTTPS, valide o certificado TLS do dominio. A WebView Android rejeita certificados expirados, autoassinados ou com cadeia incompleta.
-
-Para ambientes internos ou homologacao, instale uma cadeia de certificados confiavel no dispositivo/emulador ou publique o site com um certificado emitido por uma autoridade reconhecida pelo Android. O template nao ignora erros SSL por padrao.
-
-## Publicacao
-
-Para publicar na Play Store, gere um Android App Bundle assinado pelo Android Studio em **Build > Generate Signed Bundle / APK**.
-
-O `APP_ID` deve ser definido antes da primeira publicacao e mantido estavel nas proximas versoes.
-
-## Licenca
-
-MIT. Consulte `android-webview-open-template/LICENSE`.
+Este projeto é open-source e está licenciado sob a licença **MIT** - você é totalmente livre para usar, modificar, distribuir e comercializar este projeto para fins pessoais ou profissionais. Consulte o arquivo [LICENSE](./LICENSE) para obter mais detalhes.

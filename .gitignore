@@ -16,12 +16,3 @@
 local.properties
 .env
 debug.keystore
-debug.keystore.base64
-my-upload-key.jks
-.build-outputs/
-*.apk
-*.aab
-app/build/
-build/
-*.zip
-android-webview-open-template.zip

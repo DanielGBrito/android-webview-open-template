@@ -1,0 +1,14 @@
+<resources>
+    <!-- App visual identity -->
+    <string name="app_name">GP Social</string>
+    <string name="app_subtitle">Rede Social Corporativa</string>
+
+    <!-- Error messages and UI text -->
+    <string name="offline_title">Sem conexão com a Internet</string>
+    <string name="offline_description">Por favor, verifique seu Wi-Fi ou dados móveis para restabelecer a conexão.</string>
+    <string name="retry_button">Tentar Novamente</string>
+    <string name="error_file_chooser">Não foi possível abrir o seletor de arquivos</string>
+    <string name="download_started">Download iniciado...</string>
+    <string name="download_description">Baixando anexo do aplicativo...</string>
+    <string name="no_internet_warning">Ainda sem conexão com a internet.</string>
+</resources>
