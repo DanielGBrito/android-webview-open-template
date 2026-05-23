@@ -80,4 +80,16 @@ Antes de publicar na Play Store, configure uma chave de release propria e remova
 
 ## Licenca
 
-Este template usa a licenca MIT. Ajuste o copyright no arquivo `LICENSE` antes de publicar.
+Este projeto usa a licenca MIT.
+
+Antes de publicar o seu app ou repositorio, abra o arquivo `LICENSE` e substitua esta linha:
+
+```text
+Copyright (c) 2026
+```
+
+Por uma linha com o nome do autor, empresa ou organizacao responsavel pelo projeto:
+
+```text
+Copyright (c) 2026 Sua Empresa
+```
