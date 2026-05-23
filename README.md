@@ -34,6 +34,9 @@ APP_SUBTITLE=Seu custom slogan ou descrição curta
 # A URL do site ou PWA responsivo que o WebView irá carregar por padrão
 TARGET_URL=https://seu-site.com.br/login
 
+# ID único do aplicativo usado como package name na Play Store
+APPLICATION_ID=com.suaempresa.seuapp
+
 # O host/domínio principal do site para controlar redirecionamentos internos
 TARGET_HOST=seu-site.com.br
 
@@ -62,16 +65,27 @@ Basta colocar o arquivo de imagem da logo do seu app em uma pasta do projeto de 
 O script inteligente integrado no **Gradle** copiará, limpará formatos anteriores autodetectados (evitando duplicações de recursos na compilação do Android Asset Studio) e integrará a imagem diretamente na Splash Screen nativa e nos ícones de launcher adaptivos automáticos!
 
 ### 3. Alterar o ID do Aplicativo (Package Name)
-Abra o arquivo `/app/build.gradle.kts` e mude o seu `applicationId` padrão no bloco `defaultConfig`:
+Defina o `APPLICATION_ID` no arquivo `.env`. O Gradle lê esse valor automaticamente e aplica no `applicationId` do app durante a compilação:
+
+```properties
+APPLICATION_ID=com.suaempresa.seuapp
+```
+
+O arquivo `/app/build.gradle.kts` já está preparado para buscar esse valor:
 
 ```kotlin
 android {
+    namespace = "com.example"
+    compileSdk = 35
+
     defaultConfig {
-        applicationId = "com.suaempresa.seuapp"
+        applicationId = envProps["APPLICATION_ID"] ?: "com.aistudio.webshell.app"
         // ...
     }
 }
 ```
+
+Se `APPLICATION_ID` não estiver definido no `.env`, o projeto usará `com.aistudio.webshell.app` como valor padrão.
 
 ---
 
