@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.ViewGroup
 import android.webkit.CookieManager
+import android.webkit.SslErrorHandler
 import android.webkit.URLUtil
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
@@ -147,7 +148,6 @@ fun EmbeddedWebApp(
     var isOffline by remember { mutableStateOf(!isNetworkAvailable(context)) }
     var webErrorOccurred by remember { mutableStateOf(false) }
     
-    // Splash visibility timer
     var showSplash by remember { mutableStateOf(true) }
 
     // Navigation back press handler
@@ -155,11 +155,16 @@ fun EmbeddedWebApp(
         webViewRef.value?.goBack()
     }
 
-    // Monitoring network status periodically or initially
     LaunchedEffect(Unit) {
-        // Run splash minimum duration
-        delay(1800)
+        delay(8000)
         showSplash = false
+    }
+
+    LaunchedEffect(loadingProgress, isOffline, webErrorOccurred) {
+        if (loadingProgress >= 100f || isOffline || webErrorOccurred) {
+            delay(600)
+            showSplash = false
+        }
     }
 
     Scaffold(
@@ -303,6 +308,15 @@ fun WebViewContainer(
                         if (request?.isForMainFrame == true) {
                             onReceivedError()
                         }
+                    }
+
+                    override fun onReceivedSslError(
+                        view: WebView?,
+                        handler: SslErrorHandler?,
+                        error: android.net.http.SslError?
+                    ) {
+                        handler?.cancel()
+                        onReceivedError()
                     }
                 }
 

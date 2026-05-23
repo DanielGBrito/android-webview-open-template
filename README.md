@@ -126,6 +126,12 @@ cd android-webview-open-template
 - Nao versione `.env`, keystores, APKs ou AABs.
 - Configure uma chave de assinatura propria para builds de release.
 
+## Troubleshooting
+
+Se o app abrir uma tela de erro ao carregar um site HTTPS, valide o certificado TLS do dominio. A WebView Android rejeita certificados expirados, autoassinados ou com cadeia incompleta.
+
+Para ambientes internos ou homologacao, instale uma cadeia de certificados confiavel no dispositivo/emulador ou publique o site com um certificado emitido por uma autoridade reconhecida pelo Android. O template nao ignora erros SSL por padrao.
+
 ## Publicacao
 
 Para publicar na Play Store, gere um Android App Bundle assinado pelo Android Studio em **Build > Generate Signed Bundle / APK**.

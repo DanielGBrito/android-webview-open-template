@@ -1,4 +1,5 @@
 import java.util.Properties
+import org.gradle.api.GradleException
 import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.Delete
 
@@ -34,8 +35,14 @@ val generatedLogoResDir = layout.buildDirectory.dir("generated/res/appLogo")
 val generatedLogoDrawableDir = generatedLogoResDir.map { it.dir("drawable") }
 val configuredLogo = templateConfig.value("APP_LOGO_PATH", "")
 val configuredLogoFile = if (configuredLogo.isNotEmpty()) rootProject.file(configuredLogo) else null
-val sourceLogo = configuredLogoFile?.takeIf { it.exists() && it.isFile }
-  ?: project.file("src/main/res/drawable/default_app_logo.xml")
+val sourceLogo = when {
+  configuredLogoFile != null && configuredLogoFile.exists() && configuredLogoFile.isFile -> configuredLogoFile
+  configuredLogo.isNotEmpty() -> throw GradleException(
+    "APP_LOGO_PATH points to '$configuredLogo', but this file was not found. " +
+      "Check the file name and extension inside the branding folder."
+  )
+  else -> project.file("src/main/res/drawable/default_app_logo.xml")
+}
 val appLogoExtension = when (sourceLogo.extension.lowercase()) {
   "jpg", "jpeg" -> "jpg"
   "png" -> "png"
