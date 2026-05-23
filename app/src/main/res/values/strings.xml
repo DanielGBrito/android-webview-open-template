@@ -1,7 +1,7 @@
 <resources>
     <!-- App visual identity -->
-    <string name="app_name">GP Social</string>
-    <string name="app_subtitle">Rede Social Corporativa</string>
+    <string name="app_name">Nome do Seu App</string>
+    <string name="app_subtitle">Sua Mensagem de Splash</string>
 
     <!-- Error messages and UI text -->
     <string name="offline_title">Sem conexão com a Internet</string>
