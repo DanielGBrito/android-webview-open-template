@@ -1,6 +1,6 @@
 {
-  "name": "GP Social",
-  "description": "Rede social corporativa da GR Pereira. Uma plataforma colaborativa embedada para dispositivos Android.",
+  "name": "WebShell App",
+  "description": "Um template nativo e profissional para empacotar qualquer site ou PWA responsivo em um aplicativo Android moderno.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

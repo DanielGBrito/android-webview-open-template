@@ -6,49 +6,56 @@ plugins {
   alias(libs.plugins.secrets)
 }
 
-// Lógica para sincronizar o logotipo do aplicativo a partir da propriedade APP_LOGO_PATH definida no .env
+// Lógica para ler propriedades do .env e configurar o build de forma dinâmica e genérica
+val envProps = mutableMapOf<String, String>()
 val envFile = file("${rootDir}/.env").let { if (it.exists()) it else file("${rootDir}/.env.example") }
 if (envFile.exists()) {
-  var logoPathValue: String? = null
   envFile.forEachLine { line ->
-    if (line.trim().startsWith("APP_LOGO_PATH=")) {
-      logoPathValue = line.substringAfter("APP_LOGO_PATH=").trim()
-        .removeSurrounding("\"").removeSurrounding("'")
+    val trimmed = line.trim()
+    if (!trimmed.startsWith("#") && trimmed.contains("=")) {
+      val key = trimmed.substringBefore("=").trim()
+      val value = trimmed.substringAfter("=").trim().removeSurrounding("\"").removeSurrounding("'")
+      envProps[key] = value
     }
   }
-  if (!logoPathValue.isNullOrEmpty()) {
-    val srcFile = File(logoPathValue!!).let { if (it.isAbsolute) it else File(rootDir, logoPathValue!!) }
-    if (srcFile.exists() && srcFile.isFile) {
-      val drawableDir = file("${projectDir}/src/main/res/drawable")
-      val ext = srcFile.extension.lowercase()
-      val destFile = File(drawableDir, "gp_social_logo.$ext")
+}
 
-      // Do not copy if it's the exact same target directory to prevent copying to itself
-      if (srcFile.canonicalPath != destFile.canonicalPath) {
-        // Delete previous occurrences to avoid AAPT2 resource duplicate errors
-        val possibleExtensions = listOf("png", "jpg", "jpeg", "webp")
-        possibleExtensions.forEach { pe ->
-          if (pe != ext) {
-            File(drawableDir, "gp_social_logo.$pe").delete()
-          }
+// Sincronização automática do logotipo definido em APP_LOGO_PATH
+val logoPathValue = envProps["APP_LOGO_PATH"]
+if (!logoPathValue.isNullOrEmpty()) {
+  val srcFile = File(logoPathValue).let { if (it.isAbsolute) it else File(rootDir, logoPathValue) }
+  if (srcFile.exists() && srcFile.isFile) {
+    val drawableDir = file("${projectDir}/src/main/res/drawable")
+    val ext = srcFile.extension.lowercase()
+    val destFile = File(drawableDir, "custom_app_logo.$ext")
+
+    // Evita copiar se for o próprio destino
+    if (srcFile.canonicalPath != destFile.canonicalPath) {
+      // Deleta extensões antigas para evitar colisões AAPT2 de recursos duplicados
+      val possibleExtensions = listOf("png", "jpg", "jpeg", "webp")
+      possibleExtensions.forEach { pe ->
+        if (pe != ext) {
+          File(drawableDir, "custom_app_logo.$pe").delete()
         }
-        srcFile.copyTo(destFile, overwrite = true)
-        logger.lifecycle("GP Social Boilerplate: Sincronizado logotipo a partir de: ${srcFile.name}")
+        // Remove também arquivos legados do antigo nome "gp_social_logo" para garantir uma limpeza completa
+        File(drawableDir, "gp_social_logo.$pe").delete()
       }
-    } else {
-      logger.warn("GP Social Boilerplate: Arquivo de logotipo de origem nao encontrado em: ${srcFile.absolutePath}")
+      srcFile.copyTo(destFile, overwrite = true)
+      logger.lifecycle("WebShell Boilerplate: Sincronizado logotipo a partir de: $logoPathValue")
     }
+  } else {
+    logger.lifecycle("WebShell Boilerplate: Utilizando logotipo padrão do aplicativo.")
   }
 }
 
 android {
   namespace = "com.example"
-  compileSdk { version = release(36) { minorApiLevel = 1 } }
+  compileSdk = 35
 
   defaultConfig {
-    applicationId = "com.aistudio.gpsocial.qbyxvt"
+    applicationId = envProps["APPLICATION_ID"] ?: "com.aistudio.webshell.app"
     minSdk = 24
-    targetSdk = 36
+    targetSdk = 35
     versionCode = 1
     versionName = "1.0"
 

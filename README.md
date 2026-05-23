@@ -43,7 +43,7 @@ USER_AGENT_SUFFIX=Meu_App_Android_Shell/1.0
 # Caminho da imagem do logotipo para a Splash Screen e o ícone adaptivo (Cópia automática em tempo de build)
 # Formatos suportados: png, jpg, jpeg, webp.
 # O script do Gradle limpa arquivos antigos e sincroniza este novo logo automaticamente!
-APP_LOGO_PATH=app/src/main/res/drawable/gp_social_logo.png
+APP_LOGO_PATH=app/src/main/res/drawable/custom_app_logo.png
 ```
 
 Se preferir, o nome exibido na tela inicial do celular (Android launcher label) e as traduções amigáveis de mensagens offline continuam configuráveis em `/app/src/main/res/values/strings.xml`:

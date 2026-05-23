@@ -114,7 +114,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MyApplicationTheme {
-                GPMainScreen(
+                WebShellScreen(
                     onChooseFile = { callback, params ->
                         filePathCallback = callback
                         val intent = params?.createIntent() ?: Intent(Intent.ACTION_GET_CONTENT).apply {
@@ -136,7 +136,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun GPMainScreen(
+fun WebShellScreen(
     onChooseFile: (ValueCallback<Array<Uri>>?, WebChromeClient.FileChooserParams?) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -386,8 +386,8 @@ fun SplashLoaderScaffold() {
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.gp_social_logo),
-                    contentDescription = "GP Social Logo",
+                    painter = painterResource(id = R.drawable.custom_app_logo),
+                    contentDescription = "App Logo",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Fit
                 )
