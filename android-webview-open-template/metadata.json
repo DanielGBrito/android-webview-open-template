@@ -1,0 +1,6 @@
+{
+  "name": "Android Embedded WebView Template",
+  "description": "Template Android open source para embedar qualquer site em um app nativo com WebView.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
