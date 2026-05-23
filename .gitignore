@@ -16,3 +16,5 @@
 local.properties
 .env
 debug.keystore
+# ignorar o logo do app formato png da pasta drawable exemplo o logo gp_social_logo.png
+/app/src/main/res/drawable/gp_social_logo.png
