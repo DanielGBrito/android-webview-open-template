@@ -24,8 +24,4 @@ my-upload-key.jks
 app/build/
 build/
 *.zip
-# ignorar o arquivo android-webview-open-template.zip
 android-webview-open-template.zip
-
-# comando para apagar o arquivo android-webview-open-template.zip
-rm android-webview-open-template.zip

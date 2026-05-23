@@ -30,7 +30,8 @@ fun String.asBuildConfigString(): String =
   "\"" + replace("\\", "\\\\").replace("\"", "\\\"") + "\""
 
 val templateConfig = loadTemplateConfig()
-val drawableDir = project.file("src/main/res/drawable")
+val generatedLogoResDir = layout.buildDirectory.dir("generated/res/appLogo")
+val generatedLogoDrawableDir = generatedLogoResDir.map { it.dir("drawable") }
 val configuredLogo = templateConfig.value("APP_LOGO_PATH", "")
 val configuredLogoFile = if (configuredLogo.isNotEmpty()) rootProject.file(configuredLogo) else null
 val sourceLogo = configuredLogoFile?.takeIf { it.exists() && it.isFile }
@@ -43,13 +44,13 @@ val appLogoExtension = when (sourceLogo.extension.lowercase()) {
 }
 
 val cleanGeneratedAppLogo by tasks.registering(Delete::class) {
-  delete(fileTree(drawableDir) { include("app_logo.*") })
+  delete(generatedLogoResDir)
 }
 
 val generateAppLogo by tasks.registering(Copy::class) {
   dependsOn(cleanGeneratedAppLogo)
   from(sourceLogo)
-  into(drawableDir)
+  into(generatedLogoDrawableDir)
   rename { "app_logo.$appLogoExtension" }
 }
 
@@ -91,6 +92,11 @@ android {
     compose = true
     buildConfig = true
     resValues = true
+  }
+  sourceSets {
+    getByName("main") {
+      res.srcDir("build/generated/res/appLogo")
+    }
   }
   testOptions { unitTests { isIncludeAndroidResources = true } }
 }

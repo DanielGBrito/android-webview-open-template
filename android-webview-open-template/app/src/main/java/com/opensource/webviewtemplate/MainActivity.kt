@@ -112,7 +112,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MyApplicationTheme {
-                GPMainScreen(
+                EmbeddedWebApp(
                     onChooseFile = { callback, params ->
                         filePathCallback = callback
                         val intent = params?.createIntent() ?: Intent(Intent.ACTION_GET_CONTENT).apply {
@@ -134,7 +134,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun GPMainScreen(
+fun EmbeddedWebApp(
     onChooseFile: (ValueCallback<Array<Uri>>?, WebChromeClient.FileChooserParams?) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -255,7 +255,6 @@ fun WebViewContainer(
                 settings.apply {
                     javaScriptEnabled = true
                     domStorageEnabled = true
-                    databaseEnabled = true
                     allowFileAccess = true
                     allowContentAccess = true
                     loadWithOverviewMode = true
