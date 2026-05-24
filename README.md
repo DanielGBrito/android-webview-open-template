@@ -108,4 +108,4 @@ O arquivo APK final será gerado no diretório `/app/build/outputs/apk/debug/app
 
 ## 📄 Licença
 
-Este projeto é open-source e está licenciado sob a licença **MIT** - você é totalmente livre para usar, modificar, distribuir e comercializar este projeto para fins pessoais ou profissionais. Consulte o arquivo [LICENSE](./LICENSE) para obter mais detalhes.
+Este projeto é open-source e está licenciado sob a licença **MIT** - você é livre para usar, modificar e distribuir este projeto para fins pessoais ou profissionais. O uso, a configuração e quaisquer consequências decorrentes da utilização do projeto são de responsabilidade do usuário. Consulte o arquivo [LICENSE](./LICENSE) para obter mais detalhes.
