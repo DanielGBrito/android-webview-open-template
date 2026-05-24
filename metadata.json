@@ -1,5 +1,5 @@
 {
-  "name": "WebShell App",
+  "name": "Nome do Seu App",
   "description": "Um template nativo e profissional para empacotar qualquer site ou PWA responsivo em um aplicativo Android moderno.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

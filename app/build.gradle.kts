@@ -28,7 +28,7 @@ if (!logoPathValue.isNullOrEmpty()) {
     val drawableDir = file("${projectDir}/src/main/res/drawable")
     val ext = srcFile.extension.lowercase()
     val destFile = File(drawableDir, "custom_app_logo.$ext")
-
+    
     // Evita copiar se for o próprio destino
     if (srcFile.canonicalPath != destFile.canonicalPath) {
       // Deleta extensões antigas para evitar colisões AAPT2 de recursos duplicados
@@ -37,8 +37,6 @@ if (!logoPathValue.isNullOrEmpty()) {
         if (pe != ext) {
           File(drawableDir, "custom_app_logo.$pe").delete()
         }
-        // Remove também arquivos legados do antigo nome "gp_social_logo" para garantir uma limpeza completa
-        File(drawableDir, "gp_social_logo.$pe").delete()
       }
       srcFile.copyTo(destFile, overwrite = true)
       logger.lifecycle("WebShell Boilerplate: Sincronizado logotipo a partir de: $logoPathValue")
