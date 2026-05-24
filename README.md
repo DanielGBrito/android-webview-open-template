@@ -8,12 +8,15 @@ Originalmente projetado para a rede social corporativa **GP Social** (da Grupo P
 
 ## 🚀 Principais Recursos
 
--   **⚡ Splash Screen Animada**: Tela de carregamento integrada desenvolvida com Jetpack Compose, animações de fade-out e indicador de progresso fluído.
--   **🔌 Detecção Offline com Tela Amigável**: Tela nativa de erro de conexão com botão de reteste que evita a clássica tela branca de erro do navegador Chrome quando o usuário perde o acesso à internet.
--   **📂 Suporte Completo a Uploads (HTML5 File Choosers)**: Integração robusta com o selecionador nativo para upload de arquivos, fotos e anexos.
--   **📥 Gerenciador de Downloads Integrado (Android DownloadManager)**: Permite que os usuários baixem anexos, fotos ou PDFs diretamente do site em segundo plano no dispositivo móvel com notificações do sistema.
--   **🍪 Persistência Avançada de Cookies**: Configuração otimizada com `CookieManager` garantindo que os usuários permaneçam logados no aplicativo mesmo se reiniciarem o aparelho.
--   **📱 Edge-to-Edge Integrado**: Renderização fluída ocupando 100% da tela do usuário, respeitando a barra de status e barra de navegação virtual de forma natural.
+-   **⚡ Splash Screen Animada em Compose**: Tela de carregamento integrada com logotipo, nome do app, subtítulo, indicador circular e animações de fade-in/fade-out.
+-   **🔌 Detecção Offline com Tela Amigável**: Tela de erro de conexão criada em Jetpack Compose com botão de reteste, evitando a clássica tela branca de erro do WebView quando o usuário perde o acesso à internet.
+-   **📂 Uploads via HTML5 File Choosers**: Integração com o seletor nativo do Android para campos de upload do WebView, incluindo suporte a seleção única ou múltipla quando solicitado pelo site.
+-   **📥 Downloads com Android DownloadManager**: Permite iniciar downloads disparados pelo site em segundo plano, salvando na pasta pública de Downloads e exibindo notificação do sistema ao concluir.
+-   **🍪 Cookies e Armazenamento WebView**: Configuração de `CookieManager`, cookies de terceiros, DOM Storage e database storage para manter sessões e recursos web de forma compatível com o WebView.
+-   **📱 Edge-to-Edge Integrado**: Uso de `enableEdgeToEdge()` e layout em tela cheia para ocupar 100% da área disponível do dispositivo.
+-   **🔗 Navegação Nativa Inteligente**: Links do domínio configurado permanecem dentro do app, enquanto links externos são abertos no navegador padrão do usuário.
+-   **⬅️ Botão Voltar Integrado**: O botão voltar do Android navega pelo histórico do WebView quando houver páginas anteriores carregadas.
+-   **⚙️ Configuração por `.env`**: URL alvo, domínio interno, nome, subtítulo, package name, sufixo de User Agent e logotipo podem ser parametrizados sem alterar o código Kotlin.
 
 ---
 
@@ -62,7 +65,7 @@ Se preferir, o nome exibido na tela inicial do celular (Android launcher label) 
 ### 2. Sincronizar o Logotipo Automaticamente
 Basta colocar o arquivo de imagem da logo do seu app em uma pasta do projeto de sua preferência (por exemplo, na raiz) e apontar o caminho dela no parâmetro `APP_LOGO_PATH` do seu arquivo `.env`.
 
-O script inteligente integrado no **Gradle** copiará, limpará formatos anteriores autodetectados (evitando duplicações de recursos na compilação do Android Asset Studio) e integrará a imagem diretamente na Splash Screen nativa e nos ícones de launcher adaptivos automáticos!
+O script inteligente integrado no **Gradle** copiará, limpará formatos anteriores autodetectados (evitando duplicações de recursos na compilação do Android Asset Studio) e integrará a imagem diretamente na Splash Screen em Compose e nos ícones de launcher adaptivos automáticos!
 
 ### 3. Alterar o ID do Aplicativo (Package Name)
 Defina o `APPLICATION_ID` no arquivo `.env`. O Gradle lê esse valor automaticamente e aplica no `applicationId` do app durante a compilação:
