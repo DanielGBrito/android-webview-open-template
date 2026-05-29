@@ -22,6 +22,9 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.webkit.PermissionRequest
+import android.Manifest
+import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -83,6 +86,7 @@ import kotlinx.coroutines.delay
 class MainActivity : ComponentActivity() {
 
     private var filePathCallback: ValueCallback<Array<Uri>>? = null
+    private var pendingPermissionRequest: PermissionRequest? = null
 
     // Register ActivityResult Launcher for HTML5 File Chooser
     private val fileChooserLauncher = registerForActivityResult(
@@ -110,6 +114,75 @@ class MainActivity : ComponentActivity() {
         filePathCallback = null
     }
 
+    // Register ActivityResult Launcher for WebView Runtime Permissions (Camera/Mic)
+    private val requestPermissionsLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val request = pendingPermissionRequest
+        if (request != null) {
+            val resourcesToGrant = mutableListOf<String>()
+            var deniedAny = false
+            
+            for (res in request.resources) {
+                when (res) {
+                    PermissionRequest.RESOURCE_VIDEO_CAPTURE -> {
+                        if (permissions[Manifest.permission.CAMERA] == true) {
+                            resourcesToGrant.add(PermissionRequest.RESOURCE_VIDEO_CAPTURE)
+                        } else {
+                            deniedAny = true
+                        }
+                    }
+                    PermissionRequest.RESOURCE_AUDIO_CAPTURE -> {
+                        if (permissions[Manifest.permission.RECORD_AUDIO] == true) {
+                            resourcesToGrant.add(PermissionRequest.RESOURCE_AUDIO_CAPTURE)
+                        } else {
+                            deniedAny = true
+                        }
+                    }
+                    else -> {
+                        resourcesToGrant.add(res)
+                    }
+                }
+            }
+            
+            if (resourcesToGrant.isNotEmpty() && !deniedAny) {
+                request.grant(resourcesToGrant.toTypedArray())
+            } else {
+                request.deny()
+            }
+        }
+        pendingPermissionRequest = null
+    }
+
+    private fun handlePermissionRequest(request: PermissionRequest) {
+        runOnUiThread {
+            pendingPermissionRequest = request
+            val permissionsToRequest = mutableListOf<String>()
+            
+            for (res in request.resources) {
+                when (res) {
+                    PermissionRequest.RESOURCE_VIDEO_CAPTURE -> {
+                        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                            permissionsToRequest.add(Manifest.permission.CAMERA)
+                        }
+                    }
+                    PermissionRequest.RESOURCE_AUDIO_CAPTURE -> {
+                        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                            permissionsToRequest.add(Manifest.permission.RECORD_AUDIO)
+                        }
+                    }
+                }
+            }
+            
+            if (permissionsToRequest.isEmpty()) {
+                request.grant(request.resources)
+                pendingPermissionRequest = null
+            } else {
+                requestPermissionsLauncher.launch(permissionsToRequest.toTypedArray())
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -130,6 +203,9 @@ class MainActivity : ComponentActivity() {
                             filePathCallback = null
                             Toast.makeText(this, getString(R.string.error_file_chooser), Toast.LENGTH_SHORT).show()
                         }
+                    },
+                    onRequestPermissions = { request ->
+                        handlePermissionRequest(request)
                     }
                 )
             }
@@ -140,6 +216,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun WebShellScreen(
     onChooseFile: (ValueCallback<Array<Uri>>?, WebChromeClient.FileChooserParams?) -> Unit,
+    onRequestPermissions: (PermissionRequest) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -188,6 +265,7 @@ fun WebShellScreen(
                     webErrorOccurred = true
                 },
                 onChooseFile = onChooseFile,
+                onRequestPermissions = onRequestPermissions,
                 onWebViewCreated = { webView ->
                     webViewRef.value = webView
                 }
@@ -242,6 +320,7 @@ fun WebViewContainer(
     onProgressChanged: (Int) -> Unit,
     onReceivedError: () -> Unit,
     onChooseFile: (ValueCallback<Array<Uri>>?, WebChromeClient.FileChooserParams?) -> Unit,
+    onRequestPermissions: (PermissionRequest) -> Unit,
     onWebViewCreated: (WebView) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -347,6 +426,12 @@ fun WebViewContainer(
                     ): Boolean {
                         onChooseFile(filePathCallback, fileChooserParams)
                         return true
+                    }
+
+                    override fun onPermissionRequest(request: PermissionRequest?) {
+                        if (request != null) {
+                            onRequestPermissions(request)
+                        }
                     }
                 }
 
