@@ -12,6 +12,8 @@ import android.os.Environment
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.DownloadListener
+import android.webkit.SslErrorHandler
+import android.net.http.SslError
 import android.webkit.URLUtil
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
@@ -253,6 +255,16 @@ fun WebViewContainer(
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
                 
+                // Clear WebView cache, cookies, and local data storage to ensure absolutely clean testing state (preventing cached logins/redirects)
+                clearCache(true)
+                try {
+                    CookieManager.getInstance().removeAllCookies(null)
+                    CookieManager.getInstance().flush()
+                    android.webkit.WebStorage.getInstance().deleteAllData()
+                } catch (e: Exception) {
+                    // Safe guard
+                }
+
                 // Native Security & Shell Settings
                 settings.apply {
                     javaScriptEnabled = true
@@ -265,8 +277,11 @@ fun WebViewContainer(
                     setSupportZoom(false)
                     builtInZoomControls = false
                     displayZoomControls = false
-                    cacheMode = WebSettings.LOAD_DEFAULT
+                    cacheMode = WebSettings.LOAD_NO_CACHE
                     mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                    loadsImagesAutomatically = true
+                    javaScriptCanOpenWindowsAutomatically = true
+                    mediaPlaybackRequiresUserGesture = false
                     
                     // Customize User Agent so server side can acknowledge Android native shell if desired
                     val userAgentSuffix = BuildConfig.USER_AGENT_SUFFIX
@@ -297,6 +312,15 @@ fun WebViewContainer(
                                 false
                             }
                         }
+                    }
+
+                    override fun onReceivedSslError(
+                        view: WebView?,
+                        handler: SslErrorHandler?,
+                        error: SslError?
+                    ) {
+                        // Allow self-signed certificates or expired subdomains of internal environments
+                        handler?.proceed()
                     }
 
                     override fun onReceivedError(
