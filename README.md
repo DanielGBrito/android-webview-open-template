@@ -2,7 +2,7 @@
 
 Este é um projeto Android moderno desenvolvido em **Kotlin** e **Jetpack Compose** (Material 3) desenvolvido para encapsular (embedar) qualquer site responsivo/PWA em um aplicativo nativo robusto, profissional e pronto para produção.
 
-A arquitetura deste projeto foi totalmente descentralizada e parametrizada para que qualquer pessoa ou empresa possa usar este mesmo código-fonte para colocar seu próprio site na Google Play Store em minutos!
+Originalmente projetado para a rede social corporativa **GP Social** (da Grupo Pereira), a arquitetura deste projeto foi totalmente descentralizada e parametrizada para que qualquer pessoa ou empresa possa usar este mesmo código-fonte para colocar seu próprio site na Google Play Store em minutos!
 
 ---
 
@@ -92,20 +92,108 @@ Se `APPLICATION_ID` não estiver definido no `.env`, o projeto usará `com.aistu
 
 ---
 
-## 📦 Como Compilar e Gerar o APK
+## 📦 Como Compilar, Gerar e Instalar o APK
 
-Após configurar os itens acima, você pode rodar os testes nativos e compilar o projeto para gerar um APK pronto para instalar ou o pacote Bundle (.aab) para envio à Play Store:
+Após configurar o `.env`, o logotipo e o nome do app, você pode gerar um APK de teste instalável diretamente em um celular Android, sem precisar publicar na Play Store.
 
-Para verificar se a build e os testes unitários/Robolectric rodam perfeitamente:
+> O APK `debug` é suficiente para testes internos e instalação manual no seu próprio aparelho. Para distribuição oficial ou produção, gere uma build `release` assinada com uma chave própria.
+
+### Pré-requisitos
+
+Antes de compilar, confira se a máquina tem:
+
+- **Android SDK** instalado.
+- **JDK** instalado. O Android Studio já inclui um JDK em `C:\Program Files\Android\Android Studio\jbr`.
+- **Gradle** disponível no terminal ou uma distribuição Gradle local.
+- Arquivo `.env` configurado na raiz do projeto.
+
+No Windows, se estiver usando o VS Code, abra o terminal integrado na pasta raiz do projeto.
+
+### 1. Testar a build
+
+Para verificar se os testes unitários/Robolectric rodam corretamente:
+
 ```bash
 gradle :app:testDebugUnitTest
 ```
 
-Para gerar o APK oficial para teste:
-```bash
-gradle assembleDebug
+Se o projeto tiver os arquivos do Gradle Wrapper (`gradlew` ou `gradlew.bat`), você também pode usar:
+
+```powershell
+.\gradlew.bat :app:testDebugUnitTest
 ```
-O arquivo APK final será gerado no diretório `/app/build/outputs/apk/debug/app-debug.apk`.
+
+### 2. Gerar o APK debug
+
+Para gerar o APK instalável:
+
+```bash
+gradle :app:assembleDebug
+```
+
+Ou, no Windows com Gradle Wrapper:
+
+```powershell
+.\gradlew.bat :app:assembleDebug
+```
+
+Se o terminal retornar que `gradle` não é reconhecido, configure o `JAVA_HOME` e use o caminho completo do `gradle.bat` instalado na sua máquina:
+
+```powershell
+$env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
+$env:ANDROID_SDK_ROOT = "$env:LOCALAPPDATA\Android\Sdk"
+& "C:\caminho\para\gradle\bin\gradle.bat" :app:assembleDebug
+```
+
+No Android Studio, você também pode gerar o APK pelo menu:
+
+```text
+Build > Build Bundle(s) / APK(s) > Build APK(s)
+```
+
+### 3. Localizar o APK gerado
+
+Ao final da compilação, o arquivo será criado em:
+
+```text
+app/build/outputs/apk/debug/app-debug.apk
+```
+
+Esse é o arquivo que deve ser enviado ou instalado no celular.
+
+### 4. Instalar manualmente no celular
+
+Para instalar sem Play Store:
+
+1. Envie o arquivo `app-debug.apk` para o celular.
+2. Abra o arquivo no Android.
+3. Autorize a instalação de apps desconhecidos quando o sistema solicitar.
+4. Confirme a instalação.
+
+### 5. Instalar via cabo USB com ADB
+
+Se o celular estiver com **Opções do desenvolvedor** e **Depuração USB** ativadas, conecte o aparelho no computador e rode:
+
+```powershell
+adb devices
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+```
+
+No Windows, caso o `adb` não esteja no `PATH`, use o caminho completo:
+
+```powershell
+& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" devices
+& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" install -r "app/build/outputs/apk/debug/app-debug.apk"
+```
+
+### Observação sobre o nome do app
+
+O nome exibido no launcher do Android vem de `app/src/main/res/values/strings.xml`. Mesmo que `APP_NAME` esteja configurado no `.env`, confira se os valores abaixo também foram ajustados:
+
+```xml
+<string name="app_name">Nome do Seu App</string>
+<string name="app_subtitle">Sua Mensagem de Splash</string>
+```
 
 ---
 
