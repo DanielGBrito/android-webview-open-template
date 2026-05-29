@@ -2,7 +2,6 @@
 
 Este é um projeto Android moderno desenvolvido em **Kotlin** e **Jetpack Compose** (Material 3) desenvolvido para encapsular (embedar) qualquer site responsivo/PWA em um aplicativo nativo robusto, profissional e pronto para produção.
 
-Originalmente projetado para a rede social corporativa **GP Social** (da Grupo Pereira), a arquitetura deste projeto foi totalmente descentralizada e parametrizada para que qualquer pessoa ou empresa possa usar este mesmo código-fonte para colocar seu próprio site na Google Play Store em minutos!
 
 ---
 
